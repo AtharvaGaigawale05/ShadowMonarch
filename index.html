@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080808" />
+    <meta name="description" content="ShadowMonarch — independent digital studio crafting meaningful brand experiences." />
+    <title>ShadowMonarch | Creative Design & Development Studio</title>
+    <link rel="icon" href="/assets/images/logo.svg" />
+    <link rel="preload" href="/assets/fonts/neue.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="loader" aria-hidden="true">
+      <div class="loader-mark">ShadowMonarch<span>®</span></div>
+      <div class="loader-rail"><i></i></div>
+      <div class="loader-count">000</div>
+    </div>
+
+    <div class="cursor" aria-hidden="true"><span></span></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <span class="brand-text">Shadow<span class="glow">Monarch</span></span>
+      <div class="header-actions">
+        <button class="sound magnetic" type="button" aria-label="Enable sound" title="Enable sound">
+          <span class="sound-bars"><i></i><i></i><i></i></span>
+        </button>
+        <a class="pill talk magnetic" href="#contact"><span>LET'S TALK</span></a>
+        <button class="pill menu-toggle magnetic" type="button" aria-expanded="false">
+          <span>MENU</span><i></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="menu-panel" aria-hidden="true">
+      <div class="menu-lines"></div>
+      <nav aria-label="Primary">
+        <a href="#work"><span>01</span>WORK<em>↗</em></a>
+        <a href="#services"><span>02</span>SERVICES<em>↗</em></a>
+        <a href="#about"><span>03</span>ABOUT<em>↗</em></a>
+        <a href="#contact"><span>04</span>CONTACT<em>↗</em></a>
+      </nav>
+      <div class="menu-bottom">
+        <p>E. <a href="mailto:hello@ShadowMonarch.com">hello@ShadowMonarch.com</a></p>
+        <p>P. <a href="tel:+919824182099">+91 98241 82099</a></p>
+      </div>
+    </div>
+
+    <main id="top">
+      <section class="hero dark" data-nav="dark">
+        <canvas id="hero-canvas" aria-hidden="true"></canvas>
+        <div class="sm-ambient" aria-hidden="true"></div>
+        <canvas id="spline-canvas" aria-label="Interactive Spline 3D scene"></canvas>
+        <div class="hero-copy">
+          <h1><span>Designed to</span><span>mean <em>impact.</em></span></h1>
+          <p class="hero-subline mono">We craft digital experiences, products<br />and brands that drive <b>real impact.</b></p>
+        </div>
+        <!-- <p class="sm-interaction mono"><i></i> INTERACTIVE SPLINE SCENE</p> -->
+        <!-- <div class="hero-stamp mono">
+          <div><b>◎</b><span>EST. 2012</span></div>
+          <strong>14+ YEARS SHAPING<br />DIGITAL DIRECTION.</strong>
+        </div> -->
+        <p class="hero-note">Websites, AI products, brands, and systems built for clarity, scale and impact.</p>
+        <button class="blast" type="button" aria-label="Hold to blast">
+          <!-- <span>HOLD TO <b>✦</b> BLAST</span><small>DARE ⚡ TO TOUCH THE LINES.</small> -->
+        </button>
+        <div class="scroll-cue"><i></i><span>SCROLL TO EXPLORE</span></div>
+      </section>
+
+      <section class="about dark" id="about" data-nav="dark">
+        <div class="grid-cross c1">+</div><div class="grid-cross c2">+</div>
+        <p class="eyebrow mono reveal">AN INDEPENDENT DIGITAL STUDIO</p>
+        <h2 class="word-reveal">ShadowMonarch is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.</h2>
+        <div class="about-bottom reveal">
+          <p>Our mission is to make technology feel human by designing digital products that are intuitive, purposeful, and meaningful to people.</p>
+          <a class="line-link" href="#facts">MORE ABOUT US <span>→</span></a>
+        </div>
+      </section>
+
+      <section class="vision dark" data-nav="dark">
+        <div class="vision-sticky">
+          <div class="vision-bands" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="vision-words"><span>CREATE</span><span>INSPIRE</span><span>INNOVATE</span></div>
+          <div class="vision-shard" aria-hidden="true"></div>
+          <p class="mono">DESIGN WITH PURPOSE. BUILD WITH CLARITY.</p>
+        </div>
+      </section>
+
+      <section class="facts light" id="facts" data-nav="light">
+        <div class="section-title reveal"><h2>Key facts</h2><p>A snapshot of our<br />experience and impact.</p></div>
+        <div class="fact-cards">
+          <article class="fact-card tilt reveal" style="transition-delay:.1s"><span class="mono">Pixel-Perfect Design</span><b>100%</b><small>Every interface is handcrafted for your brand.</small></article>
+          <article class="fact-card number tilt reveal" style="transition-delay:.25s"><span class="mono">Lightning Fast</span><b>&lt; 2s</b><small>Optimized loading despite immersive 3D experiences.</small></article>
+          <article class="fact-card tilt reveal" style="transition-delay:.4s"><span class="mono">Long-Term Partnership</span><b>24/7</b><small>Continuous maintenance, updates, security, and support.</small></article>
+        </div>
+        <div class="partners">
+          <p class="mono">Powered by Industry-Leading Technologies</p>
+          <div class="partner-rail">
+            <div>
+              <span class="tech-badge">React</span><span class="tech-badge">Next.js</span><span class="tech-badge">Three.js</span><span class="tech-badge">GSAP</span><span class="tech-badge">Blender</span><span class="tech-badge">TypeScript</span><span class="tech-badge">Tailwind CSS</span><span class="tech-badge">Node.js</span><span class="tech-badge">Vercel</span><span class="tech-badge">Cloudflare</span>
+            </div>
+            <div aria-hidden="true">
+              <span class="tech-badge">React</span><span class="tech-badge">Next.js</span><span class="tech-badge">Three.js</span><span class="tech-badge">GSAP</span><span class="tech-badge">Blender</span><span class="tech-badge">TypeScript</span><span class="tech-badge">Tailwind CSS</span><span class="tech-badge">Node.js</span><span class="tech-badge">Vercel</span><span class="tech-badge">Cloudflare</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="work-scroll light" id="work" data-nav="light">
+        <div class="work-sticky">
+          <div class="work-track">
+            <div class="work-intro panel"><span class="mono">SELECTED WORK & EXPLORATIONS</span><h2>Built for relevance.<br />Designed for impact.</h2><a class="line-link" href="#work">VIEW ALL PROJECTS <span>→</span></a></div>
+            <article class="project panel">
+              <a class="project-image" href="#contact"><img src="/assets/images/projects/myworker.jpg" alt="MyWorker AI project" loading="lazy" /></a>
+              <h3>MyWorker AI</h3><div><p>AI platform simplifying hiring, management, and workforce scaling.</p><a class="line-link" href="#contact">EXPLORE PROJECT <span>→</span></a></div>
+            </article>
+            <article class="project panel">
+              <a class="project-image" href="#contact"><img src="/assets/images/projects/pulse-studio.jpg" alt="Pulse Studio project" loading="lazy" /></a>
+              <h3>Pulse Studio</h3><div><p>A motion-led studio website showcasing artists, projects, and culture.</p><a class="line-link" href="#contact">EXPLORE PROJECT <span>→</span></a></div>
+            </article>
+            <article class="project panel">
+              <a class="project-image" href="#contact"><img src="/assets/images/projects/loftloom.jpg" alt="Loftloom project" loading="lazy" /></a>
+              <h3>Loftloom</h3><div><p>Seamless real estate platform for effortless property discovery.</p><a class="line-link" href="#contact">EXPLORE PROJECT <span>→</span></a></div>
+            </article>
+            <div class="work-end panel"><h3>Discover our complete collection of digital experiences, brands, and platforms.</h3><a class="line-link" href="#contact">VIEW ALL PROJECTS <span>→</span></a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="services dark" id="services" data-nav="dark">
+        <div class="service-sticky">
+          <video class="service-smoke" src="/assets/video/services.mp4" autoplay muted loop playsinline></video>
+          <img class="stone" src="/assets/images/stone/frame_0001.webp" alt="Abstract rotating stone" />
+          <span class="service-kicker mono">OUR SERVICES</span>
+          <div class="service-title" aria-label="AI, design, development, branding"><span>AI.</span><span>DESIGN</span><span>DEVELOPMENT</span><span>BRANDING</span></div>
+          <div class="service-copy">
+            <article><b>01</b><h3>AI & Intelligent Automation</h3><p>Smarter products, automated workflows, and purposeful digital systems.</p></article>
+            <article><b>02</b><h3>Web Development</h3><p>Fast, scalable builds delivered with a product-focused approach.</p></article>
+            <article><b>03</b><h3>Product Design</h3><p>Interfaces that capture attention, deepen engagement, and earn loyalty.</p></article>
+            <article><b>04</b><h3>Branding</h3><p>Distinct visual systems with enough clarity to grow.</p></article>
+          </div>
+          <p class="service-tag mono">✦ DIFFERENT DISCIPLINES. ONE STANDARD OF CRAFT.</p>
+          <a class="line-link service-link" href="#contact">VIEW SERVICES <span>→</span></a>
+        </div>
+      </section>
+
+      <section class="testimonials light" data-nav="light">
+        <div class="testimonial-heading reveal"><h2>Built together.<br />Remembered longer.</h2><p>Great work is built through partnership. Here’s what our clients say.</p></div>
+        <div class="testimonial-stage">
+          <div class="client-tabs mono" role="tablist">
+            <button class="active" data-client="0" role="tab">LUXURY PRESENCE</button>
+            <button data-client="1" role="tab">CREDIBLE</button>
+            <button data-client="2" role="tab">FAST RESUME</button>
+            <button data-client="3" role="tab">TECHNIS</button>
+            <button data-client="4" role="tab">VENTIGENCE</button>
+          </div>
+          <div class="quote-wrap">
+            <div class="portrait"><img src="/assets/images/people/malte.webp" alt="Client portrait" loading="lazy" /></div>
+            <blockquote>“I've worked with Sunny and his team on several projects and he's one of the best UI/UX designers and front-end developers I know.”</blockquote>
+            <p><b>Malte Smith</b><span>Founder & CEO · USA</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="motion-scroll light" data-nav="light">
+        <div class="motion-sticky">
+          <div class="motion-heading"><h2><span>DESIGN<br />IN</span><span>MOTION</span></h2><p class="mono">EXPLORING IDEAS THROUGH<br />DAILY DESIGN PRACTICE.</p></div>
+          <div class="motion-rail">
+            <figure><img src="/assets/images/orbit/orbit-01.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-02.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-03.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-04.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-05.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-06.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-07.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-08.jpg" alt="Design exploration" loading="lazy" /></figure>
+            <figure><img src="/assets/images/orbit/orbit-09.jpg" alt="Design exploration" loading="lazy" /></figure>
+          </div>
+          <p class="motion-note">Concepts, explorations, and interface experiments shared openly as part of our creative process.</p>
+          <a class="line-link motion-link" href="https://dribbble.com/ShadowMonarchstudio">VIEW ON DRIBBBLE <span>→</span></a>
+        </div>
+      </section>
+
+      <footer class="footer dark" id="contact" data-nav="dark">
+        <canvas id="footer-canvas" aria-hidden="true"></canvas>
+        <div class="footer-top mono"><span>LET'S BUILD WORK THAT INSPIRES.</span><span>IST → <time></time></span></div>
+        <div class="footer-main">
+          <h2>Ready to build<br />something bold?</h2>
+          <a class="line-link" href="mailto:hello@ShadowMonarch.com">START A COLLABORATION <span>→</span></a>
+        </div>
+        <div class="footer-meta">
+          <p>©ShadowMonarch® 2026</p>
+          <div><span>BUSINESS ENQUIRY</span><a href="mailto:hello@ShadowMonarch.com">E. hello@ShadowMonarch.com</a><a href="tel:+919824182099">P. +91 98241 82099</a></div>
+          <div><span>SOCIAL</span><a href="#">Linkedin</a><a href="#">Facebook</a><a href="#">Dribbble</a><a href="#">Instagram</a></div>
+        </div>
+        <div class="footer-word" aria-hidden="true">ShadowMonarch</div>
+      </footer>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
