@@ -392,7 +392,7 @@ const updateScenes = () => {
     }
   }
 
-  if (near(offsets.m, offsets.mh)) {
+  if (!isMobile && near(offsets.m, offsets.mh)) {
     const mp = sectionProgress(offsets.m, offsets.mh, smoothScroll);
     if (Math.abs(mp - (offsets._lastMp || 0)) > .002) {
       offsets._lastMp = mp;
@@ -422,6 +422,16 @@ const resize = () => {
 addEventListener('resize', resize, { passive: true });
 resize();
 cacheOffsets();
+if (isMobile) {
+  const figs = $$('figure', motionRail);
+  const g1 = document.createElement('div');
+  const g2 = document.createElement('div');
+  g1.className = g2.className = 'motion-rail-group';
+  g1.append(...figs);
+  g2.append(...figs.map(f => f.cloneNode(true)));
+  motionRail.innerHTML = '';
+  motionRail.append(g1, g2);
+}
 requestAnimationFrame(updateScenes);
 
 
