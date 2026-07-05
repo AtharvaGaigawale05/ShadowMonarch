@@ -23,8 +23,8 @@ const stoneFrames = [];
 const loaderBar = $('.loader-rail i');
 const loaderCount = $('.loader-count');
 let loadedAssets = 0;
-const totalStone = lowPerformanceDevice ? 18 : (isMobile ? 35 : 140);
-const stoneStep = lowPerformanceDevice ? 8 : (isMobile ? 4 : 1);
+const totalStone = lowPerformanceDevice ? 18 : 140;
+const stoneStep = lowPerformanceDevice ? 8 : 1;
 for (let i = 0; i < 140; i += stoneStep) {
   const img = new Image();
   const frame = String(i + 1).padStart(4, '0');
