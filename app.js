@@ -23,8 +23,8 @@ const stoneFrames = [];
 const loaderBar = $('.loader-rail i');
 const loaderCount = $('.loader-count');
 let loadedAssets = 0;
-const totalStone = lowPerformanceDevice ? 18 : 140;
-const stoneStep = lowPerformanceDevice ? 8 : 1;
+const totalStone = 140;
+const stoneStep = 1;
 for (let i = 0; i < 140; i += stoneStep) {
   const img = new Image();
   const frame = String(i + 1).padStart(4, '0');
@@ -359,13 +359,7 @@ const updateScenes = () => {
     const sp = sectionProgress(offsets.s, offsets.sh, smoothScroll);
     const spChanged = Math.abs(sp - (offsets._lastSp || 0)) > .002;
     if (spChanged) offsets._lastSp = sp;
-    if (lowPerformanceDevice) {
-      if (!stone.dataset.lowDone) {
-        stone.dataset.lowDone = '1';
-        const midFrame = Math.min(stoneFrames.length - 1, Math.floor(stoneFrames.length / 2));
-        if (stoneFrames[midFrame]?.complete) stone.src = stoneFrames[midFrame].src;
-      }
-    } else if (spChanged && (!isMobile || frameCount % 4 === 0)) {
+    if (spChanged && (!isMobile || frameCount % 4 === 0)) {
       const maxFrame = stoneFrames.length - 1;
       const frame = Math.min(maxFrame, Math.floor(sp * maxFrame));
       if (stoneFrames[frame]?.complete && stone.dataset.frame !== frame) {
