@@ -342,9 +342,7 @@ const updateScenes = () => {
       });
       visionWords.style.transform = `translateX(${(vp - .5) * -76 * cachedInnerWidth / 100}px)`;
       const shardIn = clamp(vp * 6);
-      visionShard.style.transform = isMobile
-        ? `translateY(${(1 - shardIn) * 120}px) scale(${.75 + vp * .55})`
-        : `perspective(600px) translateY(${(1 - shardIn) * 120}px) rotateY(${25 + vp * 245}deg) rotateX(${vp * 28}deg) scale(${.75 + vp * .55})`;
+      visionShard.style.transform = `perspective(600px) translateY(${(1 - shardIn) * 120}px) rotateY(${25 + vp * 245}deg) rotateX(${vp * 28}deg) scale(${.75 + vp * .55})`;
       visionShard.style.opacity = String(shardIn);
     }
   }
