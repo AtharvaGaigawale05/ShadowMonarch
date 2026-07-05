@@ -8,24 +8,34 @@ const map = (v, a, b, c = 0, d = 1) => c + (d - c) * clamp((v - a) / (b - a));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let isMobile = innerWidth <= 800;
 let frameCount = 0;
-
+const lowPerformanceDevice = isMobile && (
+  (navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency <= 4) ||
+  (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4) ||
+  matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  devicePixelRatio > 2.5
+);
+let pageVisible = true;
+document.addEventListener('visibilitychange', () => { pageVisible = !document.hidden; });
+let cachedInnerWidth = innerWidth;
 
 /* Preload the exact stone sequence used by the scroll scene. */
 const stoneFrames = [];
 const loaderBar = $('.loader-rail i');
 const loaderCount = $('.loader-count');
 let loadedAssets = 0;
-const totalStone = isMobile ? 35 : 140;
-const stoneStep = isMobile ? 4 : 1;
+const totalStone = lowPerformanceDevice ? 18 : (isMobile ? 35 : 140);
+const stoneStep = lowPerformanceDevice ? 8 : (isMobile ? 4 : 1);
 for (let i = 0; i < 140; i += stoneStep) {
   const img = new Image();
   const frame = String(i + 1).padStart(4, '0');
   img.src = `/assets/images/stone/frame_${frame}.webp`;
   const advance = () => {
     loadedAssets += 1;
-    const n = Math.round((loadedAssets / totalStone) * 100);
-    loaderBar.style.width = `${n}%`;
-    loaderCount.textContent = String(n).padStart(3, '0');
+    if (loadedAssets % 3 === 0 || loadedAssets === totalStone) {
+      const n = Math.round((loadedAssets / totalStone) * 100);
+      loaderBar.style.width = `${n}%`;
+      loaderCount.textContent = String(n).padStart(3, '0');
+    }
   };
   img.onload = advance;
   img.onerror = advance;
@@ -51,20 +61,24 @@ let cursorY = mouseY;
 window.addEventListener('pointermove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-});
-window.addEventListener('pointerdown', () => cursor.classList.add('down'));
-window.addEventListener('pointerup', () => cursor.classList.remove('down'));
-$$('a,button,.project-image,.tilt').forEach((el) => {
-  el.addEventListener('pointerenter', () => cursor.classList.add('hover'));
-  el.addEventListener('pointerleave', () => cursor.classList.remove('hover'));
-});
-$$('.magnetic').forEach((el) => {
-  el.addEventListener('pointermove', (e) => {
-    const r = el.getBoundingClientRect();
-    el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .16}px, ${(e.clientY - r.top - r.height / 2) * .16}px)`;
+}, { passive: true });
+window.addEventListener('pointerdown', () => cursor.classList.add('down'), { passive: true });
+window.addEventListener('pointerup', () => cursor.classList.remove('down'), { passive: true });
+if (!isMobile) {
+  $$('a,button,.project-image,.tilt').forEach((el) => {
+    el.addEventListener('pointerenter', () => cursor.classList.add('hover'));
+    el.addEventListener('pointerleave', () => cursor.classList.remove('hover'));
   });
-  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-});
+}
+if (!isMobile) {
+  $$('.magnetic').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .16}px, ${(e.clientY - r.top - r.height / 2) * .16}px)`;
+    });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+  });
+}
 
 /* Full-screen menu transition. */
 const menuButton = $('.menu-toggle');
@@ -105,13 +119,13 @@ soundButton.addEventListener('click', () => {
   soundButton.setAttribute('aria-label', soundOn ? 'Disable sound' : 'Enable sound');
   if (soundOn) beep(260, .09);
 });
-$$('a,button').forEach((el) => el.addEventListener('pointerenter', () => beep(130 + Math.random() * 80)));
+if (!isMobile) $$('a,button').forEach((el) => el.addEventListener('pointerenter', () => beep(130 + Math.random() * 80)));
 
 /* Hero line-field canvas. */
 const hero = $('.hero');
 const heroCanvas = $('#hero-canvas');
 const hctx = heroCanvas.getContext('2d');
-try { initSplineScene($('#spline-canvas'), '/assets/spline/hero.splinecode'); } catch (e) { console.error('Spline init failed:', e); }
+if (!isMobile) { try { initSplineScene($('#spline-canvas'), '/assets/spline/hero.splinecode'); } catch (e) { console.error('Spline init failed:', e); } }
 let dpr = Math.min(devicePixelRatio || 1, 2);
 let blastEnergy = 0;
 let heroParticles = Array.from({ length: isMobile ? 28 : 55 }, () => ({
@@ -192,30 +206,20 @@ const splitTarget = $('.word-reveal');
 splitTarget.innerHTML = splitTarget.textContent.trim().split(/\s+/).map((w) => `<span class="word">${w}</span>`).join(' ');
 const revealObserver = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('in', e.isIntersecting)), { threshold: .16 });
 $$('.reveal').forEach((el) => revealObserver.observe(el));
-const countObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
-  if (!entry.isIntersecting || entry.target.dataset.done) return;
-  entry.target.dataset.done = '1';
-  const end = Number(entry.target.dataset.count);
-  const start = performance.now();
-  const tick = (now) => {
-    const p = clamp((now - start) / 1500);
-    entry.target.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
-    if (p < 1) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}), { threshold: .6 });
-$$('[data-count]').forEach((el) => countObserver.observe(el));
+
 
 /* Card tilt. */
-$$('.tilt').forEach((card) => {
-  card.addEventListener('pointermove', (e) => {
-    const r = card.getBoundingClientRect();
-    const rx = (e.clientY - r.top) / r.height - .5;
-    const ry = (e.clientX - r.left) / r.width - .5;
-    card.style.transform = `rotateX(${-rx * 8}deg) rotateY(${ry * 9}deg)`;
+if (!isMobile) {
+  $$('.tilt').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const rx = (e.clientY - r.top) / r.height - .5;
+      const ry = (e.clientX - r.left) / r.width - .5;
+      card.style.transform = `rotateX(${-rx * 8}deg) rotateY(${ry * 9}deg)`;
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
   });
-  card.addEventListener('pointerleave', () => { card.style.transform = ''; });
-});
+}
 
 /* Testimonial tabs. */
 const clients = [
@@ -261,11 +265,9 @@ const drawFooter = () => {
     fctx.fillStyle = g; fctx.fillRect(0, 0, w, h);
   }
 };
-const updateClock = () => {
-  const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
-  $('.footer-top time').textContent = time;
-};
-updateClock(); setInterval(updateClock, 30000);
+const clockFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false });
+const updateClock = () => { $('.footer-top time').textContent = clockFormat.format(new Date()); };
+updateClock(); setInterval(updateClock, isMobile ? 60000 : 30000);
 
 /* Scroll choreography. */
 const footer = $('footer');
@@ -296,6 +298,7 @@ const cacheOffsets = () => {
   offsets.m = motionSection.offsetTop;
   offsets.mh = motionSection.offsetHeight;
   offsets.vSpans ||= $$('span', visionWords);
+  offsets.motionMax = Math.max(0, motionRail.scrollWidth - cachedInnerWidth * .05);
 };
 
 const sectionProgress = (top, height, y) => {
@@ -308,6 +311,7 @@ const updateScenes = () => {
   smoothScroll = reduceMotion ? targetScroll : lerp(smoothScroll, targetScroll, isMobile ? .35 : .2);
 
   if (isMobile && ++frameCount % 2 !== 0) { requestAnimationFrame(updateScenes); return; }
+  if (lowPerformanceDevice && !pageVisible) { requestAnimationFrame(updateScenes); return; }
 
   if (!isMobile) {
     cursorX = lerp(cursorX, mouseX, .22);
@@ -330,16 +334,19 @@ const updateScenes = () => {
 
   if (near(offsets.v, offsets.vh)) {
     const vp = sectionProgress(offsets.v, offsets.vh, smoothScroll);
-    visionBands.forEach((band, i) => {
-      band.style.transform = `scaleX(${clamp(map(vp, .08 + i * .07, .45 + i * .07))})`;
-      band.style.transformOrigin = i % 2 ? 'right' : 'left';
-    });
-    visionWords.style.transform = `translateX(${(vp - .5) * -76 * innerWidth / 100}px)`;
-    const shardIn = clamp(vp * 6);
-    visionShard.style.transform = isMobile
-      ? `translateY(${(1 - shardIn) * 120}px) scale(${.75 + vp * .55})`
-      : `perspective(600px) translateY(${(1 - shardIn) * 120}px) rotateY(${25 + vp * 245}deg) rotateX(${vp * 28}deg) scale(${.75 + vp * .55})`;
-    visionShard.style.opacity = String(shardIn);
+    if (Math.abs(vp - (offsets._lastVp || 0)) > .002) {
+      offsets._lastVp = vp;
+      visionBands.forEach((band, i) => {
+        band.style.transform = `scaleX(${clamp(map(vp, .08 + i * .07, .45 + i * .07))})`;
+        band.style.transformOrigin = i % 2 ? 'right' : 'left';
+      });
+      visionWords.style.transform = `translateX(${(vp - .5) * -76 * cachedInnerWidth / 100}px)`;
+      const shardIn = clamp(vp * 6);
+      visionShard.style.transform = isMobile
+        ? `translateY(${(1 - shardIn) * 120}px) scale(${.75 + vp * .55})`
+        : `perspective(600px) translateY(${(1 - shardIn) * 120}px) rotateY(${25 + vp * 245}deg) rotateX(${vp * 28}deg) scale(${.75 + vp * .55})`;
+      visionShard.style.opacity = String(shardIn);
+    }
   }
 
   if (!isMobile) {
@@ -350,33 +357,47 @@ const updateScenes = () => {
 
   if (near(offsets.s, offsets.sh)) {
     const sp = sectionProgress(offsets.s, offsets.sh, smoothScroll);
-    const maxFrame = stoneFrames.length - 1;
-    const frame = Math.min(maxFrame, Math.floor(sp * maxFrame));
-    if (stoneFrames[frame]?.complete && stone.dataset.frame !== frame) {
-      stone.dataset.frame = frame;
-      stone.src = stoneFrames[frame].src;
+    const spChanged = Math.abs(sp - (offsets._lastSp || 0)) > .002;
+    if (spChanged) offsets._lastSp = sp;
+    if (lowPerformanceDevice) {
+      if (!stone.dataset.lowDone) {
+        stone.dataset.lowDone = '1';
+        const midFrame = Math.min(stoneFrames.length - 1, Math.floor(stoneFrames.length / 2));
+        if (stoneFrames[midFrame]?.complete) stone.src = stoneFrames[midFrame].src;
+      }
+    } else if (spChanged && (!isMobile || frameCount % 4 === 0)) {
+      const maxFrame = stoneFrames.length - 1;
+      const frame = Math.min(maxFrame, Math.floor(sp * maxFrame));
+      if (stoneFrames[frame]?.complete && stone.dataset.frame !== frame) {
+        stone.dataset.frame = frame;
+        stone.src = stoneFrames[frame].src;
+      }
     }
-    serviceTitle.forEach((line, i) => {
-      const spread = (i - 1.5) * map(sp, .12, .33, 0, 46);
-      line.style.transform = `translateX(${spread * innerWidth / 100}px)`;
-      line.style.opacity = String(clamp(map(sp, .34, .22)));
-    });
-    serviceCards.forEach((card, i) => {
-      const center = .34 + i * .12;
-      const enter = map(sp, center - .07, center, 0, 1);
-      const leave = 1 - map(sp, center + .08, center + .15, 0, 1);
-      const opacity = clamp(enter * leave);
-      card.style.opacity = opacity;
-      card.style.transform = `translateY(${(1 - opacity) * 30}px)`;
-    });
-    stone.style.opacity = String(clamp(map(sp, .16, .28)) * clamp(map(sp, .94, .76)));
-    stone.style.transform = `scale(${.9 + sp * .22})`;
+    if (spChanged) {
+      serviceTitle.forEach((line, i) => {
+        const spread = (i - 1.5) * map(sp, .12, .33, 0, 46);
+        line.style.transform = `translateX(${spread * cachedInnerWidth / 100}px)`;
+        line.style.opacity = String(clamp(map(sp, .34, .22)));
+      });
+      serviceCards.forEach((card, i) => {
+        const center = .34 + i * .12;
+        const enter = map(sp, center - .07, center, 0, 1);
+        const leave = 1 - map(sp, center + .08, center + .15, 0, 1);
+        const opacity = clamp(enter * leave);
+        card.style.opacity = opacity;
+        card.style.transform = `translateY(${(1 - opacity) * 30}px)`;
+      });
+      stone.style.opacity = String(clamp(map(sp, .16, .28)) * clamp(map(sp, .94, .76)));
+      stone.style.transform = `scale(${.9 + sp * .22})`;
+    }
   }
 
   if (near(offsets.m, offsets.mh)) {
     const mp = sectionProgress(offsets.m, offsets.mh, smoothScroll);
-    const motionMax = Math.max(0, motionRail.scrollWidth - innerWidth * .05);
-    motionRail.style.transform = `translate3d(${-mp * motionMax}px,0,0)`;
+    if (Math.abs(mp - (offsets._lastMp || 0)) > .002) {
+      offsets._lastMp = mp;
+      motionRail.style.transform = `translate3d(${-mp * offsets.motionMax}px,0,0)`;
+    }
   }
 
   if (!isMobile) {
@@ -386,25 +407,23 @@ const updateScenes = () => {
   requestAnimationFrame(updateScenes);
 };
 
+let resizeTick;
 const resize = () => {
-  dpr = Math.min(devicePixelRatio || 1, 2);
-  resizeCanvas(heroCanvas, hctx);
-  resizeCanvas(footerCanvas, fctx);
-  cacheOffsets();
-  isMobile = innerWidth <= 800;
+  cancelAnimationFrame(resizeTick);
+  resizeTick = requestAnimationFrame(() => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    cachedInnerWidth = innerWidth;
+    resizeCanvas(heroCanvas, hctx);
+    resizeCanvas(footerCanvas, fctx);
+    cacheOffsets();
+    isMobile = innerWidth <= 800;
+  });
 };
-addEventListener('resize', resize);
+addEventListener('resize', resize, { passive: true });
 resize();
 cacheOffsets();
 requestAnimationFrame(updateScenes);
-if (isMobile && serviceSmoke) {
-  let smokeTick;
-  const syncSmoke = () => { smokeTick = 0;
-    const y = pageYOffset, t = offsets.s, h = offsets.sh;
-    serviceSmoke[y + innerHeight * .5 > t && y < t + h + innerHeight * .5 ? 'play' : 'pause']();
-  };
-  addEventListener('scroll', () => { if (!smokeTick) smokeTick = requestAnimationFrame(syncSmoke); }, { passive: true });
-}
+
 
 /* Smooth anchor intent without hijacking normal wheel/touch scrolling. */
 $$('a[href^="#"]').forEach((link) => link.addEventListener('click', (e) => {
