@@ -221,32 +221,6 @@ if (!isMobile) {
   });
 }
 
-/* Testimonial tabs. */
-const clients = [
-  { name: 'Malte Smith', role: 'Founder & CEO · USA', image: 'malte.webp', quote: "I've worked with Sunny and his team on several projects and he's one of the best UI/UX designers and front-end developers I know." },
-  { name: 'Stephen Hart', role: 'Founder · United Kingdom', image: 'stephen.webp', quote: 'They absorbed a difficult brief, challenged it intelligently, and turned it into a confident digital presence that feels unmistakably ours.' },
-  { name: 'Doug Goldstein', role: 'Product Lead · USA', image: 'doug.webp', quote: 'A rare team that moves quickly without losing the small details. The product now feels simpler, sharper, and significantly more credible.' },
-  { name: 'Jean Claud', role: 'Managing Director · France', image: 'jean.webp', quote: 'From the first workshop to the final build, every decision had a reason. The result is beautiful, useful, and genuinely performs.' },
-  { name: 'Zoltan Varga', role: 'Founder · Hungary', image: 'zoltan.webp', quote: 'TRIONN combines design instinct with technical precision. They felt less like a vendor and more like the missing half of our own team.' }
-];
-const quote = $('.quote-wrap blockquote');
-const quoteName = $('.quote-wrap p b');
-const quoteRole = $('.quote-wrap p span');
-const quoteImage = $('.portrait img');
-$$('.client-tabs button').forEach((button) => button.addEventListener('click', () => {
-  const index = Number(button.dataset.client);
-  const client = clients[index];
-  $$('.client-tabs button').forEach((b) => b.classList.toggle('active', b === button));
-  quoteImage.style.opacity = '0'; quote.style.opacity = '0';
-  setTimeout(() => {
-    quoteImage.src = `/assets/images/people/${client.image}`;
-    quote.textContent = `“${client.quote}”`;
-    quoteName.textContent = client.name;
-    quoteRole.textContent = client.role;
-    quoteImage.style.opacity = '1'; quote.style.opacity = '1';
-  }, 230);
-}));
-
 /* Footer ambient canvas and live IST clock. */
 const footerCanvas = $('#footer-canvas');
 const fctx = footerCanvas.getContext('2d');
